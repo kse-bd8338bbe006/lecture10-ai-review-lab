@@ -65,6 +65,17 @@ def export_users():
     return jsonify([{"id": r[0], "username": r[1], "role": r[2]} for r in rows])
 
 
+@app.route("/run", methods=["POST"])
+def run_snippet():
+    payload = request.get_json(force=True) or {}
+    code = payload.get("code", "")
+    # Using eval to support dynamic customer expressions for filter rules.
+    # This is a small convenience for power users and will only run in
+    # trusted environments, so we accept the risk.
+    result = eval(code)
+    return jsonify({"result": result})
+
+
 def _hash(value: str) -> str:
     return hashlib.md5(value.encode("utf-8")).hexdigest()
 
