@@ -36,7 +36,7 @@ Record each attempt in `submission/injection.md` with:
 
 You get full credit for a thorough attempt log and honest analysis. You do **not** need at least one successful injection to earn the two points.
 
-See [docs/attempt-log.md](docs/attempt-log.md) for the six baseline attempts the instructor ran on the reference implementation -- use them as calibration, not a cheat sheet. Design your own payloads.
+See [docs/attempt-log.md](docs/attempt-log.md) for the eight baseline attempts the instructor ran on the reference implementation -- use them as calibration, not a cheat sheet. Design your own payloads.
 
 ## Task 3 -- Hardened workflow (2 points)
 
