@@ -78,7 +78,7 @@ jobs:
             -H "anthropic-version: 2023-06-01" \
             -H "content-type: application/json" \
             -d "$(jq -n --arg prompt "$PROMPT" '{
-              model: "claude-sonnet-4-6",
+              model: "claude-haiku-4-5",
               max_tokens: 4096,
               messages: [
                 { role: "user", content: ("Review this PR for security issues and post findings as markdown:\n\n" + $prompt) }
