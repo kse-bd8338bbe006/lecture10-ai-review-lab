@@ -40,7 +40,11 @@ See [docs/attempt-log.md](docs/attempt-log.md) for the three baseline attempts t
 
 ## Task 3 -- Hardened workflow (2 points)
 
-Rename `.github/workflows/ai-review-hardened.yml.TODO` to `.github/workflows/ai-review-hardened.yml` and implement it. The hardened workflow must:
+Rename `.github/workflows/ai-review-hardened.yml.TODO` to `.github/workflows/ai-review-hardened.yml` and implement it.
+
+**Ground rule:** you may **not** wrap, call, or include `anthropics/claude-code-security-review` from your workflow. The repo already ships `ai-review-hardened-reference.yml` that does exactly that. Task 3 is about showing you understand the *controls* the reference action implements, not about chaining it. Submissions that simply invoke the action get 0 points on this task.
+
+The hardened workflow must:
 
 - Trigger on `pull_request`, **not** `pull_request_target`.
 - Declare `permissions:` explicitly with the minimum set (`contents: read`, `pull-requests: write`).
@@ -51,7 +55,7 @@ Rename `.github/workflows/ai-review-hardened.yml.TODO` to `.github/workflows/ai-
 - Apply a findings filter (follow the pattern from `anthropics/claude-code-security-review/claudecode/findings_filter.py`).
 - Guard external-contributor PRs with an approval gate (follow the pattern documented in the reference repo's README).
 
-Delete `ai-review-insecure.yml` in the same PR.
+Delete `ai-review-insecure.yml` in the same PR. Leave `ai-review-hardened-reference.yml` in place -- it's the baseline you are being compared against.
 
 Credit is given for referencing the specific file or pattern from the reference repo you reused. Cite it in a short comment at the top of your workflow.
 
