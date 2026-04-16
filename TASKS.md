@@ -12,19 +12,31 @@ Create `submission/analysis.md` in your fork. For each of the nine flaws in `.gi
 
 Use one short paragraph per flaw. A numbered list is fine.
 
-## Task 2 -- Demonstrate prompt injection (2 points)
+## Task 2 -- Empirical injection study (2 points)
 
-Pick one of these three injection strategies:
+Run at least **three distinct injection attempts** against the insecure workflow on your fork. Pick from:
 
-- **PR description injection:** open a PR against your fork whose description instructs the AI to approve the change and ignore findings.
-- **Comment injection:** add a Python source comment in a changed file that instructs the AI to emit a specific fake finding or skip a file.
-- **Diff injection:** craft a diff whose added lines contain instructions that override the system prompt.
+- **PR description injection:** PR body instructs the AI to approve the change, to suppress findings, or to append attacker-controlled content (e.g., a link).
+- **Source-comment injection:** a code comment in the diff instructs the AI to skip a file, downgrade severity, or accept a "prior approval" claim.
+- **Diff-context injection:** added lines that mimic system-prompt framing ("[SYSTEM]...") or pretend to be a prior reviewer output.
+- **Indirect injection:** content in a file the reviewer is asked to read (e.g., a new `SECURITY.md`, a docstring, a test fixture).
+- **Output-shaping injection:** ask the reviewer to include a specific link, image, footer, or formatting that an attacker benefits from (referrer tracking, phishing).
 
-For your chosen strategy, include in `submission/injection.md`:
+Record each attempt in `submission/injection.md` with:
 
-1. The payload you used.
-2. A screenshot of the PR comment the workflow produced (prove the injection worked).
-3. A one-line explanation of why the insecure workflow could not defend against it.
+1. The exact payload used (verbatim).
+2. A link to the resulting PR comment, or a screenshot if you later delete the PR.
+3. Outcome: **succeeded**, **partially succeeded** (some but not all of your instruction was followed), or **detected and refused**.
+
+**Important:** It is likely that the frontier model we are using will resist most naive payloads. That is not a failure of the lab -- it is the central finding. At the end of `submission/injection.md`, answer in 3-5 sentences:
+
+1. Of the attempts that were detected, what *category* of defence was the model applying?
+2. Of the attempts that succeeded or partially succeeded, what was common about the payload?
+3. If you were asked to pick a security control for this workflow, would you rely on the model's resistance? Why or why not?
+
+You get full credit for a thorough attempt log and honest analysis. You do **not** need at least one successful injection to earn the two points.
+
+See [docs/attempt-log.md](docs/attempt-log.md) for the five baseline attempts the instructor ran on the reference implementation -- use them as calibration, not a cheat sheet. Design your own payloads.
 
 ## Task 3 -- Hardened workflow (2 points)
 
@@ -47,8 +59,8 @@ Credit is given for referencing the specific file or pattern from the reference 
 
 Add a file `submission/verification.md` showing:
 
-1. The same injection payload from Task 2, now producing no compromised output against the hardened workflow.
-2. A screenshot or log excerpt of the hardened workflow rejecting a malformed LLM response (you can force this by temporarily replacing the API call with one that returns invalid JSON).
+1. At least one payload from Task 2 that either succeeded or came closest, now producing no compromised output against the hardened workflow. If all your payloads were already detected against the insecure workflow, construct a new one designed specifically to exploit a weakness your hardened workflow explicitly closes (for example: a payload that relies on no-schema output is neutralised by your JSON schema).
+2. A screenshot or log excerpt of the hardened workflow rejecting a malformed LLM response. You can force this by temporarily stubbing the API call with a fixture that returns invalid JSON.
 
 ## Submission
 

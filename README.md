@@ -10,10 +10,14 @@ This repository ships a GitHub Actions workflow that calls the Anthropic API via
 Your job is:
 
 1. Read the insecure workflow and identify why each piece is unsafe.
-2. Demonstrate at least one of the attacks the workflow enables.
+2. Run a structured injection study against it and document what the model does or does not resist.
 3. Replace the insecure workflow with a hardened one, reusing the patterns from [anthropics/claude-code-security-review](https://github.com/anthropics/claude-code-security-review).
 
-See [TASKS.md](TASKS.md) for the graded checklist and [docs/insecure-workflow-analysis.md](docs/insecure-workflow-analysis.md) for a hint sheet that maps each flaw to a specific lecture slide.
+See [TASKS.md](TASKS.md) for the graded checklist, [docs/insecure-workflow-analysis.md](docs/insecure-workflow-analysis.md) for a hint sheet that maps each flaw to a specific lecture slide, and [docs/attempt-log.md](docs/attempt-log.md) for the instructor's baseline runs.
+
+## Reality check up front
+
+Modern frontier models are fairly robust against naive prompt injection. Expect several of your payloads to be detected and refused. That is part of the lesson, not a bug in the lab: the model's resistance is empirical and probabilistic, it depends on which model you send the call to, and it provides no guarantee at all for the other structural flaws in this workflow. The hardened version you write must be safe regardless of whether the model happens to catch the attack.
 
 ## Repo layout
 
@@ -30,7 +34,8 @@ See [TASKS.md](TASKS.md) for the graded checklist and [docs/insecure-workflow-an
 |   `-- ai-review-hardened.yml.TODO    stub you must rewrite and rename to .yml
 `-- docs/
     |-- insecure-workflow-analysis.md  per-flaw hints mapped to lecture slides
-    `-- hardening-checklist.md         checklist for the hardened workflow
+    |-- hardening-checklist.md         checklist for the hardened workflow
+    `-- attempt-log.md                 instructor baseline injection runs
 ```
 
 ## Getting started
