@@ -13,8 +13,12 @@ on:
   pull_request_target:
     types: [opened, synchronize, reopened]
 
-# Flaw 2: no top-level permissions block means the job inherits the default
-# token scope, which for many repos is write-all.
+# Flaw 2: permissions are set to write-all. The workflow only needs to
+# comment on PRs, so contents:read and pull-requests:write would be enough.
+# write-all grants the token the ability to push code, create releases,
+# modify workflows, and manage issues -- any of which can be abused if a
+# later step is compromised.
+permissions: write-all
 
 jobs:
   review:

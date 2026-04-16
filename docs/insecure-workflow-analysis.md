@@ -8,9 +8,9 @@ The `pull_request_target` trigger runs with the base-branch workflow definition,
 
 Lecture slide category: **privilege and sandboxing**.
 
-## Flaw 2 -- no `permissions:` block
+## Flaw 2 -- `permissions: write-all`
 
-Without an explicit block the workflow inherits the default `GITHUB_TOKEN` permissions set at the repo or org level. On older repos this is `write-all`. Even where the default is `read`, the principle of least privilege says the workflow should name what it needs.
+The workflow only needs `contents: read` to check out the code and `pull-requests: write` to leave a comment. `write-all` additionally grants the token permission to push code, manage workflows, create releases, mutate issues, and more. If a later step is compromised -- through the supply chain, a typosquatted action, or a prompt injection that makes the workflow execute attacker output -- the blast radius is every object in the repo.
 
 Lecture slide category: **privilege and sandboxing**.
 
