@@ -1,0 +1,58 @@
+# Reference hardened workflow -- provided by Anthropic.
+#
+# This file exists so students can see a real-world hardened implementation
+# side by side with the insecure lab target. It invokes the official
+# anthropics/claude-code-security-review composite action.
+#
+# IMPORTANT FOR STUDENTS
+# ----------------------
+# You must NOT copy this workflow verbatim as your Task 3 submission.
+# Task 3 asks you to implement your own hardened workflow that reuses the
+# PATTERNS from anthropics/claude-code-security-review -- structured output
+# via Claude Code CLI, findings filter, marker-based de-duplication,
+# scoped permissions, approval gate. Read the action's source at
+# https://github.com/anthropics/claude-code-security-review and build a
+# minimal raw-curl equivalent that demonstrates you understand each
+# control. Submissions that simply wrap this action are worth 0 points.
+#
+# Controls this reference workflow demonstrates
+# ---------------------------------------------
+#  * pull_request trigger (not pull_request_target) -- the workflow
+#    cannot access secrets on untrusted fork PRs unless a maintainer
+#    approves the run first. Enable the repo setting
+#    "Require approval for all outside collaborators" to enforce that.
+#  * permissions block with only the minimum required scopes.
+#  * timeout-minutes on the job.
+#  * actions/checkout with fetch-depth: 2 (just enough to diff the PR
+#    against its base).
+#  * Secret is scoped to the step's input, not exported job-wide.
+#  * Action uses the Claude Code CLI with structured JSON output, a
+#    findings filter to drop low-signal categories, and a marker-based
+#    cache to avoid re-running on the same commit.
+
+name: AI Review (hardened reference)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  security-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 2
+
+      - uses: anthropics/claude-code-security-review@main
+        with:
+          comment-pr: true
+          claude-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claudecode-timeout: 20

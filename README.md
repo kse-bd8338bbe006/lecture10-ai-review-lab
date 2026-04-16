@@ -19,6 +19,14 @@ See [TASKS.md](TASKS.md) for the graded checklist, [docs/insecure-workflow-analy
 
 Modern frontier models are fairly robust against naive prompt injection. Expect several of your payloads to be detected and refused. That is part of the lesson, not a bug in the lab: the model's resistance is empirical and probabilistic, it depends on which model you send the call to, and it provides no guarantee at all for the other structural flaws in this workflow. The hardened version you write must be safe regardless of whether the model happens to catch the attack.
 
+## Three workflow files on purpose
+
+The `.github/workflows/` directory holds three files that demonstrate different design points:
+
+- `ai-review-insecure.yml` -- the lab target. Review it, criticise it, do **not** modify it in place.
+- `ai-review-hardened-reference.yml` -- Anthropic's official `claude-code-security-review` action wrapped in a minimal workflow. Runs alongside the insecure one on every PR so you can compare output quality and see what a hardened real-world setup looks like. Read the source on GitHub. Do **not** copy this file verbatim into your Task 3 submission.
+- `ai-review-hardened.yml.TODO` -- the file you rename and implement yourself for Task 3. It must reuse the *patterns* from the reference action, not wrap it.
+
 ## Repo layout
 
 ```
@@ -30,8 +38,9 @@ Modern frontier models are fairly robust against naive prompt injection. Expect 
 |   |-- requirements.txt
 |   `-- tests/test_smoke.py            sanity tests
 |-- .github/workflows/
-|   |-- ai-review-insecure.yml         the bad workflow (DO NOT fix in place)
-|   `-- ai-review-hardened.yml.TODO    stub you must rewrite and rename to .yml
+|   |-- ai-review-insecure.yml             the bad workflow (DO NOT fix in place)
+|   |-- ai-review-hardened-reference.yml   Anthropic's official action -- study, don't copy
+|   `-- ai-review-hardened.yml.TODO        stub you must rewrite and rename to .yml
 `-- docs/
     |-- insecure-workflow-analysis.md  per-flaw hints mapped to lecture slides
     |-- hardening-checklist.md         checklist for the hardened workflow
