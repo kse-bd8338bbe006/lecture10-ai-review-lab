@@ -42,6 +42,10 @@ permissions:
 
 jobs:
   security-review:
+    # Demo-PR separation: skip this workflow on branches intended to show the
+    # raw-curl insecure workflow alone. Normal student PRs (any other branch)
+    # still run both workflows so the A/B comparison is visible.
+    if: ${{ !startsWith(github.event.pull_request.head.ref, 'demo-insecure/') }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
 

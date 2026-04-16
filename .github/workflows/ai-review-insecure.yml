@@ -22,6 +22,10 @@ permissions: write-all
 
 jobs:
   review:
+    # Demo-PR separation: skip this workflow on branches intended to show the
+    # hardened reference action alone. Normal student PRs (any other branch)
+    # still run both workflows so the A/B comparison is visible.
+    if: ${{ !startsWith(github.event.pull_request.head.ref, 'demo-hardened/') }}
     runs-on: ubuntu-latest
 
     # Flaw 3: API key is exposed at job scope. Every step -- including
