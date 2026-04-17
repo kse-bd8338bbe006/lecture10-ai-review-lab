@@ -12,7 +12,7 @@ Create `submission/analysis.md` in your fork. For each of the nine flaws in `.gi
 
 Use one short paragraph per flaw. A numbered list is fine.
 
-## Task 2 -- Empirical injection study (2 points)
+## Task 2 -- Empirical injection study 
 
 Run at least **three distinct injection attempts** against the insecure workflow on your fork. Pick from:
 
@@ -34,15 +34,15 @@ Record each attempt in `submission/injection.md` with:
 2. Of the attempts that succeeded or partially succeeded, what was common about the payload?
 3. If you were asked to pick a security control for this workflow, would you rely on the model's resistance? Why or why not?
 
-You get full credit for a thorough attempt log and honest analysis. You do **not** need at least one successful injection to earn the two points.
+You get full credit for a thorough attempt log and honest analysis. You do **not** need at least one successful injection to earn points.
 
 See [docs/attempt-log.md](docs/attempt-log.md) for the three baseline attempts the instructor ran on the reference implementation -- use them as calibration, not a cheat sheet. Design your own payloads.
 
-## Task 3 -- Hardened workflow (2 points)
+## Task 3 -- Hardened workflow
 
 Rename `.github/workflows/ai-review-hardened.yml.TODO` to `.github/workflows/ai-review-hardened.yml` and implement it.
 
-**Ground rule:** you may **not** wrap, call, or include `anthropics/claude-code-security-review` from your workflow. The repo already ships `ai-review-hardened-reference.yml` that does exactly that. Task 3 is about showing you understand the *controls* the reference action implements, not about chaining it. Submissions that simply invoke the action get 0 points on this task.
+**Ground rule:** you may **not** wrap, call, or include `anthropics/claude-code-security-review` from your workflow. The repo already ships `ai-review-hardened-reference.yml` that does exactly that. Task 3 is about showing you understand the *controls* the reference action implements, not about chaining it. 
 
 The hardened workflow must:
 
@@ -59,7 +59,7 @@ Delete `ai-review-insecure.yml` in the same PR. Leave `ai-review-hardened-refere
 
 Credit is given for referencing the specific file or pattern from the reference repo you reused. Cite it in a short comment at the top of your workflow.
 
-## Task 4 -- Verification (1 point)
+## Task 4 -- Verification 
 
 Add a file `submission/verification.md` showing:
 
@@ -68,11 +68,5 @@ Add a file `submission/verification.md` showing:
 
 ## Submission
 
-Open a single PR against `main` of your fork titled `lecture10 submission <your-name>`. Paste the PR URL into Moodle by the deadline. Late submissions lose 1 point per day.
+Open a single PR against `main` of your fork titled `lecture10 submission <your-name>`. Paste the PR URL into Moodle by the deadline. 
 
-## What will fail this lab
-
-- Patching the insecure workflow in place instead of writing a new one.
-- Passing the API key directly in a workflow file or committing it.
-- Using `pull_request_target` in the hardened workflow.
-- A hardened workflow that still concatenates PR metadata directly into the user prompt without a boundary delimiter or validation step.
