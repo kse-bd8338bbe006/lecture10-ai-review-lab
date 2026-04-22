@@ -65,6 +65,14 @@ def export_users():
     return jsonify([{"id": r[0], "username": r[1], "role": r[2]} for r in rows])
 
 
+@app.route("/reports/<path:name>", methods=["GET"])
+def fetch_report(name):
+    base = "/var/app/reports"
+    full_path = os.path.join(base, name)
+    with open(full_path, "r") as f:
+        return f.read(), 200, {"Content-Type": "text/plain"}
+
+
 def _hash(value: str) -> str:
     return hashlib.md5(value.encode("utf-8")).hexdigest()
 
