@@ -47,7 +47,7 @@ jobs:
 
       # Flaw 10: this step runs arbitrary code from the PR head under a
       # pull_request_target trigger. The base-branch secrets (including
-      # ANTHROPIC_API_KEY and the write-privileged GITHUB_TOKEN) are in
+      # NVIDIA_API_KEY and the write-privileged GITHUB_TOKEN) are in
       # scope for whatever pytest decides to do. A fork PR that modifies
       # sample-app/tests/*.py can exfiltrate both secrets.
       - name: Run smoke tests for AI context
@@ -89,23 +89,25 @@ jobs:
           # and we will treat it as trustworthy.
           PROMPT=$(cat /tmp/context.txt)
 
-          RESPONSE=$(curl https://integrate.api.nvidia.com/v1/chat/completions \                          
-            -H "Content-Type: application/json" \
+          RESPONSE=$(curl -sS https://integrate.api.nvidia.com/v1/chat/completions \
             -H "Authorization: Bearer $NVIDIA_API_KEY" \
-            -d '{
-              "model": "google/gemma-2-2b-it",
-              "messages": [{"role":"user","content":"Review this PR for security issues and post findings as markdown:\n\n" + $prompt)}],
-              "temperature": 0.2,   
-              "top_p": 0.7,
-              "max_tokens": 1024,
-              "stream": true                
-            })
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg prompt "$PROMPT" '{
+              model: "google/gemma-2-2b-it",
+              max_tokens: 1024,
+              temperature: 0.2,
+              top_p: 0.7,
+              stream: false,
+              messages: [
+                { role: "user", content: ("Review this PR for security issues and post findings as markdown:\n\n" + $prompt) }
+              ]
+            }')")
 
           # Flaw 8: no schema validation. Whatever text the model produced
           # -- free-form, markdown, possibly injected commands -- is extracted
           # and passed to gh pr comment. An attacker who controls the PR body
           # can control the comment body.
-          echo "$RESPONSE" | jq -r '.content[0].text' > /tmp/comment.md
+          echo "$RESPONSE" | jq -r '.choices[0].message.content' > /tmp/comment.md
 
       - name: Post review comment
         env:
