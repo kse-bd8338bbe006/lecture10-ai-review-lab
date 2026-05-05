@@ -31,7 +31,7 @@ jobs:
     # Flaw 3: API key is exposed at job scope. Every step -- including
     # third-party actions pulled in later -- can read it via the environment.
     env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
 
     # Flaw 4: no timeout. A single runaway PR can burn the API budget until
     # the month's quota is gone.
@@ -80,7 +80,7 @@ jobs:
           git fetch origin "$BASE_SHA"
           git diff "$BASE_SHA"..HEAD >> /tmp/context.txt
 
-      - name: Call Anthropic API with curl
+      - name: Call Gemma API with curl
         id: review
         run: |
           # Flaw 7: raw curl. No retry, no structured output request, no
@@ -89,17 +89,17 @@ jobs:
           # and we will treat it as trustworthy.
           PROMPT=$(cat /tmp/context.txt)
 
-          RESPONSE=$(curl -sS https://api.anthropic.com/v1/messages \
-            -H "x-api-key: $ANTHROPIC_API_KEY" \
-            -H "anthropic-version: 2023-06-01" \
-            -H "content-type: application/json" \
-            -d "$(jq -n --arg prompt "$PROMPT" '{
-              model: "claude-haiku-4-5",
-              max_tokens: 4096,
-              messages: [
-                { role: "user", content: ("Review this PR for security issues and post findings as markdown:\n\n" + $prompt) }
-              ]
-            }')")
+          RESPONSE=$(curl https://integrate.api.nvidia.com/v1/chat/completions \                          
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $NVIDIA_API_KEY" \
+            -d '{
+              "model": "google/gemma-2-2b-it",
+              "messages": [{"role":"user","content":"Review this PR for security issues and post findings as markdown:\n\n" + $prompt)}],
+              "temperature": 0.2,   
+              "top_p": 0.7,
+              "max_tokens": 1024,
+              "stream": true                
+            })
 
           # Flaw 8: no schema validation. Whatever text the model produced
           # -- free-form, markdown, possibly injected commands -- is extracted
