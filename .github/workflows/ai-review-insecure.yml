@@ -10,7 +10,7 @@ name: AI Review (INSECURE)
 # against code from the PR head. A fork PR can ship arbitrary code that the
 # workflow will then feed to a privileged job.
 on:
-  pull_request_target:
+  pull_request:
     types: [opened, synchronize, reopened]
 
 # Flaw 2: permissions are set to write-all. The workflow only needs to
